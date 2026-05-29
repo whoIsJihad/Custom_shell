@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,19 +10,13 @@
 
 int main()
 {
-
-    while (1)
+    while (1==1)
     {
         printf("-> ");
         char *line = NULL;
         size_t len = 0;
         ssize_t read = getline(&line, &len, stdin);
-        if (line[strlen(line) - 1] == '\n')
-        {
-            line[strlen(line) - 1] = '\0';
-        }
-        printf("cmd : %s\n",line);
-        if (strcmp(line, "exit") == 0)
+        if (strcmp(line, "exit\n") == 0)
             break;
         char *arguments[64];
         const char delimitter[] = " \t\n";
@@ -36,7 +29,6 @@ int main()
             token = strtok(NULL, delimitter);
         }
         arguments[n] = NULL;
-
         pid_t pid = fork();
         if (pid == 0) // child
         {
@@ -46,9 +38,7 @@ int main()
         else // parent
         {
             waitpid(pid, NULL, 0);
-            // printf("Child exited\n");
         }
     }
-
     return 0;
 }
