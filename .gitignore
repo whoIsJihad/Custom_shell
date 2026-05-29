@@ -1,0 +1,6 @@
+.vscode/
+.obsidian/
+
+*.o
+*.out
+*.a
