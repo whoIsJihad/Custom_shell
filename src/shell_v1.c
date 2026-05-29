@@ -10,14 +10,14 @@
 
 int main()
 {
-    while (1==1)
+    while (1 == 1)
     {
-        printf("-> ");
+        pid_t pid;
+        printf("$ ");
         char *line = NULL;
         size_t len = 0;
         ssize_t read = getline(&line, &len, stdin);
-        if (strcmp(line, "exit\n") == 0)
-            break;
+
         char *arguments[64];
         const char delimitter[] = " \t\n";
 
@@ -29,15 +29,28 @@ int main()
             token = strtok(NULL, delimitter);
         }
         arguments[n] = NULL;
-        pid_t pid = fork();
-        if (pid == 0) // child
+        if (strcmp(arguments[0], "exit") == 0)
         {
-            execvp(arguments[0], arguments);
-            perror("error occured in execvp");
+            break;
         }
-        else // parent
+        else if (strcmp(arguments[0], "cd") == 0)
         {
-            waitpid(pid, NULL, 0);
+            chdir(arguments[1]);
+        }
+        else
+        {
+            pid = fork();
+            if (pid == 0) // child
+            {
+                execvp(arguments[0], arguments);
+                perror("error occured in execvp");
+            }
+            else // parent
+            {
+                waitpid(pid, NULL, 0);
+                free(line);
+                line = NULL;
+            }
         }
     }
     return 0;
